@@ -1,0 +1,8 @@
+.init.el.*
+.lsp-session-v1
+/elpa
+init.el~
+projectile-*
+projectile.*
+recentf
+/transient
