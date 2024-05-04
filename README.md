@@ -1,0 +1,2 @@
+# emc
+Emacs init default
