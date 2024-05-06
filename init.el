@@ -8,14 +8,14 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(org-pomodoro helm-flymake flymake-flycheck marginalia selectrum-prescient selectrum dumb-jump flycheck-eglot flycheck-google-cpplint flycheck-kotlin kotlin-mode android-env android-mode ivy-todo projectile-ripgrep ivy-yasnippet ivy-file-preview ivy-fuz ivy-xref ivy-searcher ivy ag helm-fuzzy-find helm-searcher helm flycheck lsp-ui lsp-mode neotree projectile darcula-theme magit which-key)))
+   '(counsel request eglot ace-window org-pomodoro helm-flymake flymake-flycheck marginalia selectrum-prescient selectrum dumb-jump flycheck-eglot flycheck-google-cpplint flycheck-kotlin kotlin-mode android-env android-mode ivy-todo projectile-ripgrep ivy-yasnippet ivy-file-preview ivy-fuz ivy-xref ivy-searcher ivy ag helm-fuzzy-find helm-searcher helm flycheck lsp-ui lsp-mode neotree projectile darcula-theme magit which-key)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
-(set-face-attribute 'default nil :font "JetBrainsMono NFP" :height 140)
+(set-face-attribute 'default nil :font "JetBrainsMono NFP" :height 120)
 
 (which-key-mode)
 
@@ -57,7 +57,7 @@
                         (projects . 5)))
 
 ;; set key board shorcuts
-(global-set-key (kbd "C-x g") 'magit-status)
+(global-set-key (kbd "C-x s") 'magit-status)
 
 ;; set theme
 (load-theme 'darcula t)
@@ -88,6 +88,24 @@
 ;; Ativar o flycheck
 ;;(require 'flycheck)
 ;;(global-flycheck-mode)
+;;
+
+(use-package ivy
+  :ensure t
+  :config
+  (ivy-mode 1)
+  (setq ivy-use-virtual-buffers t
+        ivy-height 10
+        ivy-count-format "(%d/%d) "))
+
+(use-package counsel
+  :ensure t
+  :bind
+  (("C-x b" . counsel-switch-buffer)))
+
+(require 'ace-window)
+
+(global-set-key (kbd "C-x o") 'ace-window)
 
 (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
 
@@ -96,8 +114,49 @@
 (setq-default fill-column 80)
 
 (setq initial-frame-alist
-      '((width . 170)    ; Largura da janela em caracteres
-        (height . 42)))  ; Altura da janela em linhas
+      '((width . 205)    ; Largura da janela em caracteres
+        (height . 48)))  ; Altura da janela em linhas
+
+(defun my-update-mode-line-buffer-name ()
+    "Update mode line to display full file path with highlight when unsaved changes."
+      (setq-default mode-line-format
+         (list
+	  " " 
+	  ;; File modification status
+	  '(:eval (if (buffer-modified-p)
+	                (propertize " Modificado " 'face '(:foreground "red"))
+	           " "))
+           ;;'(:eval
+           ;;  (let* ((filename (buffer-file-name))
+           ;;      (buffer-modified-p (buffer-modified-p))
+           ;;      (file-segment (if filename
+           ;;                       (propertize (file-name-nondirectory filename)
+             ;;                                 'face (if buffer-modified-p
+             ;;                                             '(:weight bold :foreground "yellow")
+             ;;                                               '(:weight bold)))
+             ;;                     "buffer sem nome")))))
+	    "    "
+	    ;; Current mode
+	    '(:eval (propertize "%m" 'face '(:weight bold :foreground "blue")))
+	    "    "
+	    ; Current file name
+	    '(:eval (propertize (buffer-name) 'face '(:weight bold )))
+	    "    "
+            ;; Git branch
+            '(:eval (let ((branch (replace-regexp-in-string "\n" "" (shell-command-to-string "git symbolic-ref --short -q HEAD"))))
+                     (if (stringp branch)
+                         (propertize (concat " Git: " branch) 'face '(:weight bold ))
+															       " ")))
+            ;;(concat " " file-segment " ")))))
+	    ;; Rest of the mode line
+	    " -- %l:%c"
+	    " -- "
+            '(:eval (propertize (format-time-string "%H:%M") )))))
+                    
+(add-hook 'after-save-hook 'my-update-mode-line-buffer-name)
+(add-hook 'after-revert-hook 'my-update-mode-line-buffer-name)
+(add-hook 'find-file-hook 'my-update-mode-line-buffer-name)
+(add-hook 'first-change-hook 'my-update-mode-line-buffer-name)
 
 
 (defun meu-frame-vertical ()
@@ -132,5 +191,13 @@
      ))
 
 
+(defun hide-mode-line-in-term ()
+  (when (equal major-mode 'term-mode)
+    (setq-local mode-line-format " ")))
+
+(add-hook 'after-change-major-mode-hook 'hide-mode-line-in-term)
+
 (global-set-key (kbd "C-x g") 'meu-frame-magit)
 (global-set-key (kbd "C-x t") 'meu-frame-vertical)
+(put 'upcase-region 'disabled nil)
+(put 'downcase-region 'disabled nil)

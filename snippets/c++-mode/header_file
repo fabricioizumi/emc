@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: tpv header
+# key: tpvheader
+# --header of tpv
+/*******************************************************************************
+ * Copyright (c) `(format-time-string "%Y")` TPV Technology
+ * All rights reserved.
+ *******************************************************************************/
