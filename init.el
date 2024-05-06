@@ -93,6 +93,44 @@
 
 (define-key projectile-mode-map (kbd "C-x p") 'projectile-command-map)
 
+(setq-default fill-column 80)
+
 (setq initial-frame-alist
       '((width . 170)    ; Largura da janela em caracteres
         (height . 42)))  ; Altura da janela em linhas
+
+
+(defun meu-frame-vertical ()
+    "Cria um novo frame e o divide em dois verticalmente."
+     (interactive)
+     (let ((novo-frame (make-frame-command)))
+     (modify-frame-parameters novo-frame '((name . " "))) ; Remove o título do frame
+     (set-frame-parameter novo-frame 'tool-bar-lines 0) (set-frame-parameter novo-frame 'menu-bar-lines 0) ; Remove a barra de menu
+     (select-frame-set-input-focus novo-frame)
+     (set-frame-width novo-frame 1800 nil t) ; Define a largura para 120 colunas
+     (set-frame-height novo-frame 980 nil t) ; Define altura
+     (select-frame-set-input-focus novo-frame)
+     (ansi-term "/bin/bash")
+     (split-window-right)
+     (ansi-term "/bin/bash")
+     (split-window-below)
+     (other-window 1)
+     (ansi-term "/bin/bash")))
+
+(defun meu-frame-magit ()
+    "Abre o Magit em um novo frame."
+     (interactive)
+     (let ((novo-frame (make-frame-command)))
+     (select-frame-set-input-focus novo-frame) ; Seleciona o novo frame
+     (set-frame-width novo-frame 1800 nil t) ; Define a largura para 120 colunas
+     (set-frame-height novo-frame 980 nil t) ; Define altura
+     (select-frame-set-input-focus novo-frame)
+     (magit-status) ; Inicia o Magit
+     (split-window-right)
+     (other-window 1) ; Move para a segunda janela
+     (switch-to-buffer (other-buffer (current-buffer))) ; Abre o último buffer
+     ))
+
+
+(global-set-key (kbd "C-x g") 'meu-frame-magit)
+(global-set-key (kbd "C-x t") 'meu-frame-vertical)
