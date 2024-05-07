@@ -77,6 +77,8 @@
       '((t . ivy--regex-fuzzy)))
 
 (setq magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)
+(setq ediff-window-setup-function 'ediff-setup-windows-plain)
+
 ;; Ativar o lsp-mode
 ;;(require 'lsp-mode)
 ;;(add-hook 'prog-mode-hook #'lsp)
@@ -191,6 +193,9 @@
      ))
 
 
+(setq-default indent-tabs-mode nil) ; Use spaces instead of tabs
+(setq-default tab-width 4) ; Set the tab width to 4 spaces
+                           ;
 (defun hide-mode-line-in-term ()
   (when (equal major-mode 'term-mode)
     (setq-local mode-line-format " ")))
