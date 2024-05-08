@@ -8,7 +8,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(counsel request eglot ace-window org-pomodoro helm-flymake flymake-flycheck marginalia selectrum-prescient selectrum dumb-jump flycheck-eglot flycheck-google-cpplint flycheck-kotlin kotlin-mode android-env android-mode ivy-todo projectile-ripgrep ivy-yasnippet ivy-file-preview ivy-fuz ivy-xref ivy-searcher ivy ag helm-fuzzy-find helm-searcher helm flycheck lsp-ui lsp-mode neotree projectile darcula-theme magit which-key)))
+   '(helm-ag counsel request eglot ace-window org-pomodoro helm-flymake flymake-flycheck marginalia selectrum-prescient selectrum dumb-jump flycheck-eglot flycheck-google-cpplint flycheck-kotlin kotlin-mode android-env android-mode ivy-todo projectile-ripgrep ivy-yasnippet ivy-file-preview ivy-fuz ivy-xref ivy-searcher ivy ag helm-fuzzy-find helm-searcher helm flycheck lsp-ui lsp-mode neotree projectile darcula-theme magit which-key)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -56,7 +56,7 @@
 (setq dashboard-items '((recents . 5)
                         (projects . 5)))
 
-;; set key board shorcuts
+
 (global-set-key (kbd "C-x s") 'magit-status)
 
 ;; set theme
@@ -66,7 +66,9 @@
 
 ;; Ativar o Projectile
 (projectile-mode +1)
-(setq projectile-completion-system 'ivy)
+;;(setq projectile-completion-system 'ivy)
+(setq projectile-completion-system 'helm)
+(helm-projectile-on)
 
 ;; Ativar o Neotree
 (require 'neotree)
@@ -78,6 +80,7 @@
 
 (setq magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
+
 
 ;; Ativar o lsp-mode
 ;;(require 'lsp-mode)
@@ -160,6 +163,12 @@
 (add-hook 'find-file-hook 'my-update-mode-line-buffer-name)
 (add-hook 'first-change-hook 'my-update-mode-line-buffer-name)
 
+(use-package counsel
+  :ensure t
+  :bind
+  (("C-x b" . counsel-switch-buffer)))
+
+(setq counsel-switch-buffer-preview-virtual t)
 
 (defun meu-frame-vertical ()
     "Cria um novo frame e o divide em dois verticalmente."
@@ -206,3 +215,14 @@
 (global-set-key (kbd "C-x t") 'meu-frame-vertical)
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
+
+
+(winner-mode)
+(global-set-key (kbd "C-c <left>") 'winner-undo)
+
+(add-hook 'after-init-hook 'global-company-mode)
+
+;; Cargar el archivo gnus.el si existe
+(let ((gnus-config-file (expand-file-name ".gnus.el" user-emacs-directory)))
+   (when (file-exists-p gnus-config-file)
+       (load gnus-config-file)))
