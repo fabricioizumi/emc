@@ -70,6 +70,16 @@
 (setq projectile-completion-system 'helm)
 (helm-projectile-on)
 
+;; Ativar o Helm
+;;(require 'helm-config)
+
+;; Configuração do helm-imenu
+(global-set-key (kbd "M-i") 'helm-imenu)
+
+;; Personalizar o comportamento do helm-imenu, se necessário
+;; (consulte a documentação do helm-imenu para opções de personalização)
+;;
+
 ;; Ativar o Neotree
 (require 'neotree)
 (global-set-key (kbd "C-x n") 'neotree-toggle)
@@ -213,6 +223,9 @@
 
 (global-set-key (kbd "C-x g") 'meu-frame-magit)
 (global-set-key (kbd "C-x t") 'meu-frame-vertical)
+
+(global-set-key (kbd "C-x /") 'comment-line)
+
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
 
@@ -226,3 +239,36 @@
 (let ((gnus-config-file (expand-file-name ".gnus.el" user-emacs-directory)))
    (when (file-exists-p gnus-config-file)
        (load gnus-config-file)))
+
+
+;; Configuração do cpplint
+(flycheck-define-checker c/cpplint
+  "A C/C++ checker using cpplint."
+
+  :command ("cpplint"
+            (option-list "-j" flycheck-cpplint-jobs)
+            (config-file "-f" flycheck-cpplintrc)
+            source-original)
+
+  :error-patterns
+  ((warning line-start (file-name) ":" line ":" column ": " (message) line-end))
+
+  :modes (c-mode c++-mode))
+
+;; Ativar o checker cpplint para C/C++ no modo flycheck
+(add-to-list 'flycheck-checkers 'c/cpplint)
+
+;; Configuração para ff-find-other-file
+(eval-after-load 'cc-mode
+  '(progn
+     (setq-default ff-search-directories '("." "../include" "../src"))
+     (define-key c-mode-map (kbd "C-c h") 'ff-find-other-file)
+     (define-key c++-mode-map (kbd "C-c h") 'ff-find-other-file)
+     ))
+
+(eval-after-load 'c++-mode
+  '(progn
+     (setq-default ff-search-directories '("." "../include" "../src"))
+     (define-key c-mode-map (kbd "C-c h") 'ff-find-other-file)
+     (define-key c++-mode-map (kbd "C-c h") 'ff-find-other-file)
+     ))
