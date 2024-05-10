@@ -226,6 +226,16 @@
 
 (global-set-key (kbd "C-x /") 'comment-line)
 
+;; Atalho para habilitar/desabilitar whitespace-mode
+(global-set-key (kbd "C-c w") 'toggle-whitespace-mode)
+
+(defun toggle-whitespace-mode ()
+  "Toggle whitespace-mode."
+  (interactive)
+  (if whitespace-mode
+      (whitespace-mode -1)
+    (whitespace-mode 1)))
+
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
 
@@ -272,3 +282,9 @@
      (define-key c-mode-map (kbd "C-c h") 'ff-find-other-file)
      (define-key c++-mode-map (kbd "C-c h") 'ff-find-other-file)
      ))
+
+;; Configuração do Flycheck
+(setq flycheck-display-errors-function #'flycheck-display-error-messages-unless-error-list)
+
+(provide 'init)
+
