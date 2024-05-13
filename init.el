@@ -187,8 +187,8 @@
      (modify-frame-parameters novo-frame '((name . " "))) ; Remove o título do frame
      (set-frame-parameter novo-frame 'tool-bar-lines 0) (set-frame-parameter novo-frame 'menu-bar-lines 0) ; Remove a barra de menu
      (select-frame-set-input-focus novo-frame)
-     (set-frame-width novo-frame 1800 nil t) ; Define a largura para 120 colunas
-     (set-frame-height novo-frame 980 nil t) ; Define altura
+     (set-frame-width novo-frame 2450 nil t) ; Define a largura para 120 colunas
+     (set-frame-height novo-frame 1280 nil t) ; Define altura
      (select-frame-set-input-focus novo-frame)
      (ansi-term "/bin/bash")
      (split-window-right)
