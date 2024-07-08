@@ -8,7 +8,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(helm-ag counsel request eglot ace-window org-pomodoro helm-flymake flymake-flycheck marginalia selectrum-prescient selectrum dumb-jump flycheck-eglot flycheck-google-cpplint flycheck-kotlin kotlin-mode android-env android-mode ivy-todo projectile-ripgrep ivy-yasnippet ivy-file-preview ivy-fuz ivy-xref ivy-searcher ivy ag helm-fuzzy-find helm-searcher helm flycheck lsp-ui lsp-mode neotree projectile darcula-theme magit which-key)))
+   '(company-quickhelp rtags-xref rtags tree-sitter-langs cmake-ide flycheck-popup-tip helm-ag counsel request eglot ace-window org-pomodoro helm-flymake flymake-flycheck marginalia selectrum-prescient selectrum dumb-jump flycheck-eglot flycheck-google-cpplint flycheck-kotlin kotlin-mode android-env android-mode ivy-todo projectile-ripgrep ivy-yasnippet ivy-file-preview ivy-fuz ivy-xref ivy-searcher ivy ag helm-fuzzy-find helm-searcher helm flycheck lsp-ui lsp-mode neotree projectile darcula-theme magit which-key)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -22,7 +22,17 @@
 (use-package company
   :ensure t
   :config
-  (add-hook 'after-init-hook 'global-company-mode))
+  (add-hook 'after-init-hook 'global-company-mode)
+  (setq company-idle-delay 0.1)
+  (setq company-minimum-prefix-length 2)
+  ; (setq company-tooltip-align-annotations t)
+  (setq company-tooltip-offset-display 'lines)
+  (setq company-tooltip-flip-when-above t)
+  (define-key company-active-map (kbd "\C-n") 'company-select-next)
+  (define-key company-active-map (kbd "\C-p") 'company-select-previous)
+  (define-key company-active-map (kbd "\C-d") 'company-show-doc-buffer)
+  (define-key company-active-map (kbd "M-.") 'company-show-location)
+  )
 
 
 (use-package yasnippet
@@ -101,8 +111,12 @@
 ;;(add-hook 'lsp-mode-hook #'lsp-ui-mode)
 
 ;; Ativar o flycheck
-;;(require 'flycheck)
-;;(global-flycheck-mode)
+(require 'flycheck)
+(global-flycheck-mode)
+
+(list 'an-info-here
+      'a-warning-here
+      'an-error-here)
 ;;
 
 (use-package ivy
@@ -212,9 +226,8 @@
      ))
 
 
-(setq-default indent-tabs-mode nil) ; Use spaces instead of tabs
-(setq-default tab-width 4) ; Set the tab width to 4 spaces
-                           ;
+
+
 (defun hide-mode-line-in-term ()
   (when (equal major-mode 'term-mode)
     (setq-local mode-line-format " ")))
@@ -267,6 +280,7 @@
 
 ;; Ativar o checker cpplint para C/C++ no modo flycheck
 (add-to-list 'flycheck-checkers 'c/cpplint)
+(add-hook 'after-init-hook #'global-flycheck-mode)
 
 ;; Configuração para ff-find-other-file
 (eval-after-load 'cc-mode
@@ -286,5 +300,39 @@
 ;; Configuração do Flycheck
 (setq flycheck-display-errors-function #'flycheck-display-error-messages-unless-error-list)
 
+(defun hide-line-numbers-in-terminal-buffers ()
+  "Hide line numbers in terminal buffers."
+  ;; (when (and (not (display-graphic-p))
+  ;;            (string-prefix-p "-term*" (buffer-name)))
+  (when (string-prefix-p "-term*" (buffer-name))
+    (setq-local display-line-numbers nil)))
+
+(add-hook 'after-change-major-mode-hook #'hide-line-numbers-in-terminal-buffers)
+
 (provide 'init)
 
+(setq-default tab-width 4) ; Set the tab width to 4 spaces
+(setq c-basic-offset 4)   ;
+(setq-default indent-tabs-mode nil) ; Use spaces instead of tabs
+
+
+;; Load rtags and start the cmake-ide-setup process
+(require 'rtags)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Setup cmake-ide
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; (require 'cmake-ide)
+;; (cmake-ide-setup)
+;; ;; Set cmake-ide-flags-c++ to use C++11
+;; (setq cmake-ide-flags-c++ (append '("-std=c++11")))
+;; ;; We want to be able to compile with a keyboard shortcut
+;; (global-set-key (kbd "C-c m") 'cmake-ide-compile)
+
+;; Set rtags to enable completions and use the standard keybindings.
+;; A list of the keybindings can be found at:
+;; http://syamajala.github.io/c-ide.html
+(setq rtags-autostart-diagnostics t)
+(rtags-diagnostics)
+(setq rtags-completions-enabled t)
+(rtags-enable-standard-keybindings)
