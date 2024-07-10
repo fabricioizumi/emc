@@ -356,5 +356,6 @@
 (setq gc-cons-threshold (* 100 1024 1024)
       read-process-output-max (* 1024 1024))
 
+;;; Including custom functions
 (load (concat default-directory "custom.el"))
 ;;; init.el ends here
