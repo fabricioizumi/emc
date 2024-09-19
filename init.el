@@ -8,7 +8,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(company-quickhelp rtags-xref rtags tree-sitter-langs cmake-ide flycheck-popup-tip helm-ag counsel request eglot ace-window org-pomodoro helm-flymake flymake-flycheck marginalia selectrum-prescient selectrum dumb-jump flycheck-eglot flycheck-google-cpplint flycheck-kotlin kotlin-mode android-env android-mode ivy-todo projectile-ripgrep ivy-yasnippet ivy-file-preview ivy-fuz ivy-xref ivy-searcher ivy ag helm-fuzzy-find helm-searcher helm flycheck lsp-ui lsp-mode neotree projectile darcula-theme magit which-key)))
+   '(company-quickhelp rtags-xref rtags tree-sitter-langs cmake-ide flycheck-popup-tip helm-ag counsel request eglot ace-window org-pomodoro helm-flymake flymake-flycheck marginalia selectrum-prescient selectrum dumb-jump flycheck-eglot flycheck-google-cpplint flycheck-kotlin kotlin-mode android-env android-mode ivy-todo projectile-ripgrep ivy-yasnippet ivy-file-preview ivy-fuz ivy-xref ivy-searcher ivy ag helm-fuzzy-find helm-searcher helm flycheck lsp-ui lsp-mode neotree projectile darcula-theme magit which-key swiper)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -111,8 +111,14 @@
 ;;(add-hook 'lsp-mode-hook #'lsp-ui-mode)
 
 ;; Ativar o flycheck
-(require 'flycheck)
-(global-flycheck-mode)
+(use-package flycheck
+  :ensure t
+  :init
+  (yas-global-mode 1)
+ )
+;;(require 'flycheck)
+;;(global-flycheck-mode)
+
 
 (list 'an-info-here
       'a-warning-here
@@ -125,7 +131,36 @@
   (ivy-mode 1)
   (setq ivy-use-virtual-buffers t
         ivy-height 10
-        ivy-count-format "(%d/%d) "))
+        ivy-count-format "(%d/%d) ")
+  ;; (setq ivy-use-virtual-buffers t)
+  ;; (setq enable-recursive-minibuffers t)
+  ;; ;; enable this if you want `swiper' to use it
+  ;; ;;(setq search-default-mode #'char-fold-to-regexp)
+  ;; (global-set-key "\C-s" 'swiper-isearch)
+  ;; (global-set-key (kbd "C-c C-r") 'ivy-resume)
+  ;; (global-set-key (kbd "<f6>") 'ivy-resume)
+  ;; (global-set-key (kbd "M-x") 'counsel-M-x)
+  ;; (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+  ;; (global-set-key (kbd "<f1> f") 'counsel-describe-function)
+  ;; (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+  ;; (global-set-key (kbd "<f1> o") 'counsel-describe-symbol)
+  ;; (global-set-key (kbd "<f1> l") 'counsel-find-library)
+  ;; (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+  ;; (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+  ;; (global-set-key (kbd "C-c g") 'counsel-git)
+  ;; (global-set-key (kbd "C-c j") 'counsel-git-grep)
+  ;; (global-set-key (kbd "C-c k") 'counsel-ag)
+  ;; (global-set-key (kbd "C-x l") 'counsel-locate)
+  ;; (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
+  ;; (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
+
+)
+
+;; Using Swiper
+;; (use-package swiper
+;;   :ensure t
+;;   :bind ("C-s" . swiper)
+;;   )
 
 (use-package counsel
   :ensure t
@@ -356,6 +391,21 @@
 (setq gc-cons-threshold (* 100 1024 1024)
       read-process-output-max (* 1024 1024))
 
+;;(use-package lsp-mode :commands lsp :ensure t)
+;;(use-package lsp-ui :commands lsp-ui-mode :ensure t)
+;;(use-package company-lsp
+;;  :ensure t
+;;  :commands company-lsp
+;;  :config (push 'company-lsp company-backends)) ;; add company-lsp as a backend
+
+;;(use-package ccls
+;;  :ensure t
+;;  :config
+;;  (setq ccls-executable "ccls")
+;;  (setq lsp-prefer-flymake nil)
+;;  (setq-default flycheck-disabled-checkers '(c/c++-clang c/c++-cppcheck c/c++-gcc))
+;;  :hook ((c-mode c++-mode objc-mode) .
+;;         (lambda () (require 'ccls) (lsp))))
 ;;; Including custom functions
-(load (concat default-directory "custom.el"))
+(load (concat default-directory "/home/fabricio/emc/custom.el"))
 ;;; init.el ends here
